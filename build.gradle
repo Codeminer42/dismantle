@@ -1,5 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'idea'
+
+version = '0.0.2'
+group = 'com.codeminer42'
+
 repositories {
   mavenCentral()
 }
