@@ -27,7 +27,7 @@ public class ModelTest {
         }
 
         @Override
-        protected Map<String, String> externalRepresentationKeyPaths() {
+        public Map<String, String> externalRepresentationKeyPaths() {
             Map<String, String> extRep = new HashMap<String, String>();
             extRep.put("birthdate", "birth_date");
             extRep.put("distance", "distance");
