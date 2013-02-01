@@ -7,19 +7,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Model {
-    abstract public Map<String, String> externalRepresentationKeyPaths();
+    public Map<String, String> externalRepresentationKeyPaths() {
+        return null;
+    }
 
     protected Model() {
 
     }
 
     protected Model(Map<String, Object> externalRepresentation) {
-        final Map<String, String> selfRepresentation = this.externalRepresentationKeyPaths();
+        Map<String, String> selfRepresentation = this.completeExternalRepresentationKeyPaths();
         for (String property : selfRepresentation.keySet()) {
             String path = selfRepresentation.get(property);
             Object transformable = getData(externalRepresentation, path);
             assignProperty(property, transformable);
         }
+    }
+
+    private Map<String, String> completeExternalRepresentationKeyPaths() {
+        Map<String, String> selfRepresentation = this.externalRepresentationKeyPaths();
+        if (selfRepresentation == null)
+            selfRepresentation = new HashMap<String, String>();
+        final Field[] fields =  this.getClass().getDeclaredFields();
+        for(Field f : this.getClass().getDeclaredFields()) {
+            if (!selfRepresentation.containsKey(f.getName())) {
+                if (!f.getName().startsWith("this$")) //Ignore nested-class reference
+                    selfRepresentation.put(f.getName(), f.getName());
+            }
+
+        }
+        return selfRepresentation;
     }
 
     private static Object getData(Map<String, Object> externalRepresentation, String path) {
@@ -42,7 +59,7 @@ public abstract class Model {
     }
 
     public Map<String, Object> externalRepresentation() {
-        final Map<String, String> selfRepresentation = this.externalRepresentationKeyPaths();
+        Map<String, String> selfRepresentation = this.completeExternalRepresentationKeyPaths();
         Map<String, Object> representation = new HashMap<String, Object>();
         for (String property : selfRepresentation.keySet()) {
             representation.put(selfRepresentation.get(property), getProperty(property));
