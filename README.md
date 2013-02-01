@@ -1,4 +1,66 @@
-dismantle
-=========
+# dismantle
 
 A [Mantle](https://github.com/github/Mantle) clone in Java.
+
+## Example Usage
+
+A ModelExample with birthdate and distance properties:
+
+```java
+class ModelExample {
+  public String birthdate;
+  public Double distance;
+}
+```
+
+Now we extends the example class with Model. Giving a map of keypaths, the super() constructor will earn the ability to receive a Map<String, Object> to be matched.
+If the simple attribution is not easy (like on distance), you need to develop a method transformToDistance (see below).
+
+
+```java
+class ModelExample extends Model {
+
+  public String birthdate;
+  public Double distance;
+
+  public ModelExample(Map<String, Object> rep) {
+    super(rep);
+  }
+
+  @Override
+  public Map<String, String> externalRepresentationKeyPaths() {
+    Map<String, String> extRep = new HashMap<String, String>();
+    extRep.put("birthdate", "birth_date");
+    return extRep;
+  }
+
+  private Object transformToDistance(Object obj) {
+    return Double.valueof((String) obj);
+  }
+
+  private Object transformFromDistance(Object obj) {
+    if (obj != null) {
+      return obj.toString();
+    }
+    return null;
+  }
+}
+```
+
+The ModelExample can be instantiated using a map now! :)
+
+You can also describe nested attributes on a map, for example:
+
+```java
+  @Override
+  public Map<String, String> externalRepresentationKeyPaths() {
+    Map<String, String> extRep = new HashMap<String, String>();
+    extRep.put("birthdate", "birth_date");
+    extRep.put("distance", "location.address");
+    return extRep;
+  }
+```
+
+Now, the constructor will look for a Map inside a Map within the keys: 'location' -> 'address'.
+
+Wanna see more complex examples? [ModelTest](https://github.com/edgurgel/dismantle/blob/master/src/test/java/com/codeminer42/dismantle/ModelTest.java)
