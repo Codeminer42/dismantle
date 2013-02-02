@@ -34,15 +34,12 @@ class ModelExample extends Model {
     return extRep;
   }
 
-  private Object transformToDistance(Object obj) {
+  private Double transformToDistance(Object obj) {
     return Double.valueof((String) obj);
   }
 
-  private Object transformFromDistance(Object obj) {
-    if (obj != null) {
-      return obj.toString();
-    }
-    return null;
+  private Object transformFromDistance(Double obj) {
+    return obj;
   }
 }
 ```
@@ -61,7 +58,7 @@ You can also describe nested attributes on a map, for example:
   }
 ```
 
-Now, the constructor will look for a Map inside a Map within the keys: 'location' -> 'address'.
+Now, the constructor will look for a Map inside a Map within the keys: 'location', then 'address'.
 
 Wanna see more complex examples? [ModelTest](https://github.com/edgurgel/dismantle/blob/master/src/test/java/com/codeminer42/dismantle/ModelTest.java)
 

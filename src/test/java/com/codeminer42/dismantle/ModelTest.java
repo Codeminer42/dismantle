@@ -59,15 +59,15 @@ public class ModelTest {
             return extRep;
         }
 
-        private Object transformToBirthdate(Object obj) {
-            return obj;
+        private String transformToBirthdate(Object obj) {
+            return (String) obj;
         }
 
-        private Object transformToSmoker(Object obj) {
-            return obj;
+        private Boolean transformToSmoker(Object obj) {
+            return (Boolean) obj;
         }
 
-        private Object transformToDistance(Object obj) {
+        private Double transformToDistance(Object obj) {
             try {
                 return parseDouble((String) obj);
             } catch(Exception e) {
@@ -75,14 +75,11 @@ public class ModelTest {
             return null;
         }
 
-        private Object transformFromDistance(Object obj) {
-            if (obj != null) {
-                return obj.toString();
-            }
-            return null;
+        private Object transformFromDistance(Double obj) {
+            return obj;
         }
 
-        private  Object transformToAddress(Object obj) {
+        private  AddressExample transformToAddress(Object obj) {
             AddressExample address = new AddressExample((Map<String, Object>)obj);
             return address;
         }
@@ -129,7 +126,7 @@ public class ModelTest {
         Map<String, Object> rep = example.externalRepresentation();
 
         assertThat((String) rep.get("birth_date"), is("2002"));
-        assertThat((String) rep.get("distance"), is("200.9"));
+        assertThat((Double) rep.get("distance"), is(200.9));
         assertThat((String) rep.get("CONTENT"), is("Codeminer 42"));
     }
 

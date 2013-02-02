@@ -86,12 +86,15 @@ public abstract class Model {
     }
 
     private Object getProperty(String property) {
-        Object propertyData = tryToGetField(property);
-        Object result;
+        Object result = null;
+        Object propertyData = null;
         try {
-            result = tryToInvokeTransformationFrom(property, propertyData);
+            Field propertyField = getField(this.getClass(), property);
+            propertyData = tryToGetField(propertyField);
+            result = tryToInvokeTransformationFrom(propertyField, propertyData);
         } catch (NoSuchMethodException e) {
             result = propertyData;
+        } catch (NoSuchFieldException ignored) {
         }
         return result;
     }
@@ -107,9 +110,9 @@ public abstract class Model {
         return null;
     }
 
-    private Object tryToInvokeTransformationFrom(String property, Object propertyValue) throws NoSuchMethodException {
+    private Object tryToInvokeTransformationFrom(Field property, Object propertyValue) throws NoSuchMethodException {
         try {
-            Method method = this.getClass().getDeclaredMethod("transformFrom" + captitalizeFirstLetter(property), Object.class);
+            Method method = this.getClass().getDeclaredMethod("transformFrom" + captitalizeFirstLetter(property.getName()), property.getType());
             method.setAccessible(true);
             return method.invoke(this, propertyValue);
         } catch (InvocationTargetException ignored) {
@@ -133,12 +136,10 @@ public abstract class Model {
      * @param property
      * @return property data
      */
-    private final Object tryToGetField(String property) {
+    private final Object tryToGetField(Field property) {
         try {
-            Field field = getField(this.getClass(), property);
-            field.setAccessible(true);
-            return field.get(this);
-        } catch (NoSuchFieldException ignored) {
+            property.setAccessible(true);
+            return property.get(this);
         } catch (IllegalAccessException ignored) {
         }
         return null;
