@@ -48,7 +48,7 @@ The ModelExample can be instantiated using a map now! This can be useful using a
 
 ```java
 Map<String, Object> map = new HashMap<String, Object>();
-map.put("birthdate", "16/12/1987");
+map.put("birth_date", "16/12/1987");
 map.put("distance", 500.022);
 new ModelExample(map);
 ```
