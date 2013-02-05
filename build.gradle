@@ -1,13 +1,98 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: "signing"
 
-version = '0.0.2'
+version = '0.0.4'
 group = 'com.codeminer42'
+archivesBaseName="dismantle"
 
 repositories {
   mavenCentral()
 }
 
 dependencies {
+  compile "net.vidageek:mirror:1.6.1"
   testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+if(!hasProperty("sonatypeUsername")){
+    sonatypeUsername = ""
+}
+
+if(!hasProperty("sonatypePassword")){
+    sonatypePassword = ""
+}
+
+signing {
+    sign configurations.archives
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+              authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+               name 'dismantle'
+               packaging 'jar'
+               description 'A Mantle clone in Java. An easy way to create and externalize objects using maps.'
+               url 'https://github.com/Codeminer42/dismantle'
+
+               scm {
+                   url 'scm:git@github.com:Codeminer42/dismantle.git'
+                   connection 'scm:git@github.com:Codeminer42/dismantle.git'
+                   developerConnection 'scm:git@github.com:Codeminer42/dismantle.git'
+               }
+
+               licenses {
+                   license {
+                       name 'The MIT License'
+                       url 'http://opensource.org/licenses/MIT'
+                       distribution 'repo'
+                   }
+               }
+
+               developers {
+                   developer {
+                       id 'edgurgel'
+                       name 'Eduardo Gurgel'
+                   }
+                   developer {
+                       id 'bastos'
+                       name 'Tiago Bastos'
+                   }
+                   developer {
+                       id 'alissonsales'
+                       name 'Alisson Sales'
+                   }
+                   developer {
+                       id 'marceloemanoel'
+                       name 'Marcelo Emanoel B. Diniz'
+                   }
+               }
+           }
+        }
+    }
 }
