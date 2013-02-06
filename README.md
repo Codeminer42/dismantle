@@ -1,4 +1,5 @@
-# dismantle [![Build Status](https://travis-ci.org/edgurgel/dismantle.png?branch=master)](https://travis-ci.org/edgurgel/dismantle)
+# dismantle [![Build Status](https://travis-ci.org/Codeminer42/dismantle.png?branch=master)](https://travis-ci.org/Codeminer42/dismantle)
+
 
 A [Mantle](https://github.com/github/Mantle) clone in Java.
 
