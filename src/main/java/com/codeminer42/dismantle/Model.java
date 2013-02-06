@@ -10,7 +10,7 @@ import net.vidageek.mirror.dsl.ClassController;
 import net.vidageek.mirror.dsl.Mirror;
 
 public abstract class Model {
-    
+
     private ClassController<?> mirrorOnClass;
     private AccessorsController mirrorOnThis;
 
@@ -56,6 +56,17 @@ public abstract class Model {
         return field.getName().startsWith("this$");
     }
 
+    private static void setData(Map<String, Object> externalRepresentation, String path, Object data) {
+        if (path.contains(".")) {
+            String[] subPaths = path.split("\\.");
+            Map<String, Object> nestedRepresentation = new HashMap<String, Object>();
+            Object nestedObject = externalRepresentation.put(subPaths[0], nestedRepresentation);
+            setData(nestedRepresentation, path.substring(subPaths[0].length()+1), data);
+        } else {
+            externalRepresentation.put(path, data);
+        }
+    }
+
     private static Object getData(Map<String, Object> externalRepresentation, String path) {
         if (path.contains(".")) {
             String[] subPaths = path.split("\\.");
@@ -79,7 +90,7 @@ public abstract class Model {
         Map<String, String> selfRepresentation = this.completeExternalRepresentationKeyPaths();
         Map<String, Object> representation = new HashMap<String, Object>();
         for (String property : selfRepresentation.keySet()) {
-            representation.put(selfRepresentation.get(property), getProperty(property));
+            setData(representation, selfRepresentation.get(property), getProperty(property));
         }
         return representation;
     }
@@ -147,7 +158,7 @@ public abstract class Model {
         return mirrorOnThis.get().field(property);
     }
 
-    private String capitalize(String word) {
+    private static String capitalize(String word) {
         return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
 
