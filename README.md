@@ -1,4 +1,4 @@
-# dismantle
+# dismantle [![Build Status](https://travis-ci.org/edgurgel/dismantle.png?branch=master)](https://travis-ci.org/edgurgel/dismantle)
 
 A [Mantle](https://github.com/github/Mantle) clone in Java.
 
