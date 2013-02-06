@@ -68,15 +68,13 @@ public class ModelTest {
         }
 
         private Double transformToDistance(Object obj) {
-            try {
-                return parseDouble((String) obj);
-            } catch(Exception e) {
-            }
-            return null;
+            return Double.valueOf((String) obj);
         }
 
         private Object transformFromDistance(Double obj) {
-            return obj;
+            if (obj != null)
+                return obj.toString();
+            return null;
         }
 
         private  AddressExample transformToAddress(Object obj) {
@@ -122,12 +120,15 @@ public class ModelTest {
         example.birthdate = "2002";
         example.distance = 200.9;
         example.content = "Codeminer 42";
+        example.smoker = true;
 
         Map<String, Object> rep = example.externalRepresentation();
 
         assertThat((String) rep.get("birth_date"), is("2002"));
-        assertThat((Double) rep.get("distance"), is(200.9));
+        assertThat((String) rep.get("distance"), is("200.9"));
         assertThat((String) rep.get("CONTENT"), is("Codeminer 42"));
+        Map<String, Object> userRep = (Map<String, Object>) rep.get("user");
+        assertThat((Boolean) userRep.get("smoker"), is(true));
     }
 
     @Test
@@ -153,5 +154,23 @@ public class ModelTest {
 
         assertThat(example.address, instanceOf(AddressExample.class));
         assertEquals(example.address.zipcode, "12345");
+    }
+
+    @Test
+    public void testConstructWithExternalRepresentation() {
+        ModelExample example = new ModelExample();
+        example.birthdate = "2002";
+        example.distance = 200.9;
+        example.content = "Codeminer 42";
+        example.smoker = true;
+
+        Map<String, Object> rep = example.externalRepresentation();
+
+        ModelExample recretedExample = new ModelExample(rep);
+
+        assertEquals(example.birthdate, recretedExample.birthdate);
+        assertEquals(example.content, recretedExample.content);
+        assertEquals(example.smoker, recretedExample.smoker);
+        assertEquals(example.distance, recretedExample.distance);
     }
 }
