@@ -90,7 +90,6 @@ public abstract class Model {
         Map<String, String> selfRepresentation = this.completeExternalRepresentationKeyPaths();
         Map<String, Object> representation = new HashMap<String, Object>();
         for (String property : selfRepresentation.keySet()) {
-            //representation.put(selfRepresentation.get(property), getProperty(property));
             setData(representation, selfRepresentation.get(property), getProperty(property));
         }
         return representation;
